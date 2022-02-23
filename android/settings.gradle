@@ -1,0 +1,7 @@
+rootProject.name = 'SalsaBelajarHewan'
+include ':@invertase_react-native-google-ads'
+project(':@invertase_react-native-google-ads').projectDir = new File(rootProject.projectDir, '../node_modules/@invertase/react-native-google-ads/android')
+include ':@invertase_react-native-google-ads'
+project(':@invertase_react-native-google-ads').projectDir = new File(rootProject.projectDir, '../node_modules/@invertase/react-native-google-ads/android')
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'

@@ -1,0 +1,8 @@
+{
+  "name": "SalsaBelajarHewan",
+  "displayName": "SalsaBelajarHewan",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-8920089442341585~9815253648",
+    "ios_app_id": "ca-app-pub-xxxxxxxx~xxxxxxxx"
+  }
+}
