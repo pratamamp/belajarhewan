@@ -7,6 +7,7 @@ import Choice from '../component/choice';
 import TrueNotif from '../component/benar';
 import FalseNotif from '../component/salah';
 import {
+  AppConfig,
   detailAssets,
   items,
   tebakSuaraAssets,
@@ -17,6 +18,7 @@ import {
 } from '../config';
 import Ending from '../component/endingpanel';
 import ReplayIcon from '../component/replaybtn';
+import {BannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 
 Sound.setCategory('Playback');
 
@@ -39,7 +41,7 @@ function GameTebakSuara({navigation, route}) {
     name: '',
     answer: [],
   });
-  const {changeBGM} = route.params;
+  const {changeBGM, addCountAds, interstitialCounter} = route.params;
   const [willAnswer, setWillAnswer] = useState(false);
   const [maxQuestion, setMaxQuestion] = useState(5);
   const [notifTrue, setNotifTrue] = useState(false);
@@ -265,6 +267,7 @@ function GameTebakSuara({navigation, route}) {
         }
       };
       getData();
+      addCountAds();
       return () => {
         isActive = false;
         releaseAllSound();
@@ -338,6 +341,23 @@ function GameTebakSuara({navigation, route}) {
             onRepeat={repeatHandler}
             onHome={backToHome}
             point={getStar}
+          />
+        </View>
+      )}
+
+      {interstitialCounter % 4 === 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 30,
+            zIndex: 3,
+          }}>
+          <BannerAd
+            unitId={AppConfig.unitBanner}
+            size={BannerAdSize.BANNER}
+            requestOptions={{requestNonPersonalizedAdsOnly: true}}
+            onAdFailedToLoad={err => console.error(err)}
           />
         </View>
       )}

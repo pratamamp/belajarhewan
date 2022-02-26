@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {homeAssets} from '../config';
 import LangSwitch from '../component/home/langswitch';
 import {useFocusEffect} from '@react-navigation/core';
-import Home4 from '../component/home/home4';
+// import Home4 from '../component/home/home4';
 import {BannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 import {AppConfig} from '../config';
 
@@ -265,7 +265,7 @@ export default function Home({route, navigation}) {
     if (bahasa && indexOpening < voiceLanguage.length) {
       playVoice();
     }
-    console.log(`index ke ${indexOpening}`);
+    // console.log(`index ke ${indexOpening}`);
   }, [indexOpening, voiceLanguage]);
   return (
     <>
@@ -312,11 +312,11 @@ export default function Home({route, navigation}) {
             ]}>
             <Home3 />
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('tebakmakanan')}
             style={styles.button}>
             <Home4 />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={{flex: 1, position: 'absolute'}}>
           <Animated.View
