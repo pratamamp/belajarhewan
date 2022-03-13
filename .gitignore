@@ -6,7 +6,6 @@
 #
 
 .gitignore
-package.json
 build/
 *.pbxuser
 !default.pbxuser
