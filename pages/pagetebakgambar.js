@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Image, TouchableOpacity} from 'react-native';
+import {View, Image, TouchableOpacity, BackHandler} from 'react-native';
 import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TrueNotif from '../component/benar';
 import Choice from '../component/choice';
 import Ending from '../component/endingpanel';
 import FalseNotif from '../component/salah';
+import {BannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 
 import {
   AppConfig,
@@ -34,7 +35,7 @@ const shuffle = arr => {
 
 function GameTebakGambar({navigation, route}) {
   const {bgImage, grassTopLeft, grassTopRight} = tebakGambarAssets;
-  const {changeBGM} = route.params;
+  const {changeBGM, addCountAds, interstitialCounter} = route.params;
   const [isEnding, setIsEnding] = useState(false);
   const [question, setCurrentQuestion] = useState({
     id: null,
@@ -54,7 +55,6 @@ function GameTebakGambar({navigation, route}) {
   const [point, setPoint] = useState(0);
   const [getStar, setGetStar] = useState(0);
   const [language, setLang] = useState();
-  const [showInterstitial, setShowInterstitial] = useState(true);
   const bottomGrass = [
     true,
     false,
@@ -208,11 +208,8 @@ function GameTebakGambar({navigation, route}) {
     setIsEnding(false);
   }
   function backToHome() {
-    // setTimeout(() => {
-    //   navigation.replace('home');
-    //   setShowInterstitial(true);
-    // }, 1000);
     navigation.replace('home');
+    addCountAds();
   }
   function releaseAllSound() {
     if (soundTebak) {
@@ -238,20 +235,19 @@ function GameTebakGambar({navigation, route}) {
           console.log(err);
         }
       };
+      const onBackPress = () => {
+        addCountAds();
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
       getData();
-      // const onBeforeRemove = e => {
-      //   e.preventDefault();
-      //   console.log('back pressed!');
-      //   setShowInterstitial(true);
-      //   navigation.dispatch(e.data.action);
-      // };
-      // navigation.addListener('beforeRemove', onBeforeRemove);
 
       return () => {
         isActive = false;
         // navigation.removeListener('beforeRemove', onBeforeRemove);
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
       };
-    }, [questionList, adDismissed, adLoaded]),
+    }, [questionList]),
   );
   useEffect(() => {
     changeBGM(3, 0);
@@ -401,6 +397,22 @@ function GameTebakGambar({navigation, route}) {
           resizeMode="contain"
         />
       </View>
+      {interstitialCounter % 3 === 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 30,
+            zIndex: 3,
+          }}>
+          <BannerAd
+            unitId={AppConfig.unitBanner}
+            size={BannerAdSize.BANNER}
+            requestOptions={{requestNonPersonalizedAdsOnly: true}}
+            onAdFailedToLoad={err => console.error(err)}
+          />
+        </View>
+      )}
     </View>
   );
 }

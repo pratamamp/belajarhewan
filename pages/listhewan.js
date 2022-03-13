@@ -38,7 +38,6 @@ export default function PageHewan({route, navigation}) {
   function backToHome() {
     navigation.navigate('home');
   }
-
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
@@ -55,6 +54,7 @@ export default function PageHewan({route, navigation}) {
           console.error(err);
         }
       };
+      addCountAds();
       getData();
       return () => {
         isActive = false;
@@ -76,9 +76,6 @@ export default function PageHewan({route, navigation}) {
     };
   }, [voiceLanguage]);
 
-  // useEffect(() => {
-  //   addCountAds();
-  // }, []);
   return (
     <View
       style={{

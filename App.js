@@ -30,7 +30,7 @@ function App() {
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [currentbgmID, setbgmID] = useState();
   const [bgmTime, setbgmTime] = useState(0);
-  const [isPlayingBGM, setIsPlayBGM] = useState(false);
+  const [isPlayingBGM, setIsPlayBGM] = useState(true);
   const [lang, setLang] = useState();
   const {bgm} = AppConfig;
   const [interstitialCounter, setCounter] = useState(0);
@@ -38,10 +38,9 @@ function App() {
     AppConfig.unitInterstitial,
     {
       requestNonPersonalizedAdsOnly: true,
-      keywords: ['fashion', 'clothing'],
+      keywords: ['kids', 'fun'],
     },
   );
-  const [adsLoaded, setAdsLoaded] = useState(false);
 
   async function createNewLang() {
     try {
@@ -68,7 +67,7 @@ function App() {
   useEffect(() => {
     mobileAds()
       .setRequestConfiguration({
-        maxAdContentRating: MaxAdContentRating.PG,
+        maxAdContentRating: MaxAdContentRating.G,
         tagForChildDirectedTreatment: true,
         tagForUnderAgeOfConsent: true,
       })
@@ -86,23 +85,22 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log('root counter changed!');
     const eventListener = interstitial.onAdEvent(type => {
-      if (type === AdEventType.LOADED) {
-        console.log('ads ada!');
-        setAdsLoaded(true);
-      }
-      if (type === AdEventType.OPENED) {
-        console.log('ads played');
-      }
-      if (type === AdEventType.CLOSED) {
-        setAdsLoaded(false);
-        console.log('ads closed');
+      if (interstitialCounter > 0 && interstitialCounter % 5 === 0) {
+        if (type === AdEventType.LOADED) {
+          interstitial.show();
+          console.log('ad Loaded');
+        }
       }
     });
 
     interstitial.load();
-    return () => eventListener();
-  }, [adsLoaded]);
+    console.log(`Ads Countdown: ${5 - (interstitialCounter % 5)}`);
+    return () => {
+      eventListener();
+    };
+  }, [interstitialCounter]);
 
   function changeBGM(id, time) {
     setbgmID(time);
@@ -111,8 +109,6 @@ function App() {
 
   function addCountAds() {
     setCounter(interstitialCounter + 1);
-    if (adsLoaded) interstitial.show();
-    return interstitialCounter;
   }
 
   function playBGM(id) {
@@ -194,13 +190,13 @@ function App() {
             <Stack.Screen
               name="tebakgambar"
               options={{headerShown: false}}
-              initialParams={{changeBGM}}
+              initialParams={{changeBGM, addCountAds, interstitialCounter}}
               component={GameTebakGambar}
             />
             <Stack.Screen
               name="tebaksuara"
               options={{headerShown: false}}
-              initialParams={{changeBGM}}
+              initialParams={{changeBGM, addCountAds, interstitialCounter}}
               component={GameTebakSuara}
             />
           </Stack.Navigator>
